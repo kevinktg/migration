@@ -3,493 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Research & Document Repository | Interactive Template</title>
+    <title>The Brand Powerhouse Duo | An Interactive Migration Strategy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+    <!-- Chosen Palette: Warm Neutrals & Subtle Blues -->
+    <!-- Application Structure Plan: The application is structured as a narrative journey, guiding the user from the high-level concept ("The Duo") to the foundational logic ("The Why"), the core value proposition ("The How"), and finally the actionable plan ("The What"). This thematic, top-down approach was chosen over mirroring the report's sections to make the complex strategy more digestible for a user who needs to quickly grasp the core ideas first, then dive into details. Navigation is primarily scroll-based, with a sticky header for quick access to key sections. Interactive elements like charts and clickable cards are used to engage the user and present data-heavy information in an intuitive format. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: State Nomination Risk -> Goal: Compare -> Viz/Presentation: Side-by-side large stats with color coding -> Interaction: Static visual comparison -> Justification: Immediately highlights the core strategic pivot in a high-impact, easily understood format. -> Library/Method: HTML/Tailwind.
+        - Report Info: Points Optimisation (190 vs 491) -> Goal: Compare/Inform -> Viz/Presentation: Donut Chart -> Interaction: Hover for tooltips -> Justification: Clearly shows the composition of the total points score and the significant impact of the 15 points from the 491 visa. -> Library/Method: Chart.js (Canvas).
+        - Report Info: Four Strategic Layers -> Goal: Organize/Inform -> Viz/Presentation: Interactive Cards -> Interaction: Click to reveal detailed explanation -> Justification: Presents the four pillars in a clean, scannable format, allowing the user to explore each layer in detail without overwhelming the initial view. -> Library/Method: HTML/Tailwind/JS.
+        - Report Info: Execution Timeline -> Goal: Organize/Change -> Viz/Presentation: Vertical Timeline Diagram -> Interaction: Static visual flow -> Justification: Clearly visualizes the sequential nature of the application process, making the multi-month plan easy to follow. -> Library/Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background-color: #F8F7F4; /* Warm Neutral Background */
+            color: #4A4A4A;
         }
-        
-        .glass-morphism {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
         }
-        
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .animate-pulse-slow {
-            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        
-        .animate-slide-up {
-            animation: slideUp 0.8s ease-out forwards;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        @keyframes slideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
             }
         }
-        
-        .chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            height: 500px;
-            z-index: 1000;
-            transform: translateY(100%);
-            transition: transform 0.3s ease-in-out;
+        .sticky-nav {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
-        
-        .chatbot-container.open {
-            transform: translateY(0);
+        .perspective-1000 {
+            perspective: 1000px;
         }
-        
-        .chatbot-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            cursor: pointer;
-            z-index: 1001;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        .card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
         }
-        
-        .audio-visualizer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            height: 40px;
+        .card-face {
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
         }
-        
-        .audio-bar {
-            width: 3px;
-            background: linear-gradient(to top, #667eea, #764ba2);
-            border-radius: 2px;
-            animation: audioWave 1.5s ease-in-out infinite;
+        .card-back {
+            transform: rotateY(180deg);
         }
-        
-        .audio-bar:nth-child(1) { animation-delay: 0s; height: 10px; }
-        .audio-bar:nth-child(2) { animation-delay: 0.1s; height: 20px; }
-        .audio-bar:nth-child(3) { animation-delay: 0.2s; height: 35px; }
-        .audio-bar:nth-child(4) { animation-delay: 0.3s; height: 20px; }
-        .audio-bar:nth-child(5) { animation-delay: 0.4s; height: 25px; }
-        
-        @keyframes audioWave {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.3); }
-        }
-        
-        .section-card {
-            transition: all 0.3s ease;
-        }
-        
-        .section-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        .is-flipped {
+            transform: rotateY(180deg);
         }
     </style>
 </head>
 <body class="antialiased">
-    <!-- Header -->
-    <header class="glass-morphism mx-4 mt-4 sticky top-4 z-50">
+
+    <!-- Header & Navigation -->
+    <header class="sticky-nav bg-white/80 backdrop-blur-lg shadow-sm">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-white animate-float">📚 Research Hub</h1>
+            <h1 class="text-xl font-bold text-[#2C3E50]">Brand Powerhouse Duo</h1>
             <nav class="hidden md:flex space-x-6">
-                <a href="#reports" class="text-white/80 hover:text-white transition-colors">Reports</a>
-                <a href="#documents" class="text-white/80 hover:text-white transition-colors">Documents</a>
-                <a href="#research" class="text-white/80 hover:text-white transition-colors">Research</a>
-                <a href="#audio" class="text-white/80 hover:text-white transition-colors">Audio</a>
+                <a href="#strategy" class="text-gray-600 hover:text-[#3498DB]">The Strategy</a>
+                <a href="#pivot" class="text-gray-600 hover:text-[#3498DB]">The Pivot</a>
+                <a href="#layers" class="text-gray-600 hover:text-[#3498DB]">The Value</a>
+                <a href="#roadmap" class="text-gray-600 hover:text-[#3498DB]">The Roadmap</a>
             </nav>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
-        <!-- Hero Section -->
-        <section class="text-center py-16 animate-slide-up">
-            <h2 class="text-5xl md:text-6xl font-extrabold text-white mb-4">
-                Interactive Document Repository
-            </h2>
-            <p class="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-                A smart template for organizing research, documents, and media with AI-powered assistance
+    <main class="container mx-auto p-6 md:p-10">
+
+        <!-- Section 1: The Core Strategy -->
+        <section id="strategy" class="text-center py-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-[#2C3E50] mb-4">A Synergistic Approach to Migration</h2>
+            <p class="text-lg text-gray-700 max-w-3xl mx-auto">
+                This application reframes two skilled professionals—a Marketing Specialist and a Graphic Designer—into a single, high-value economic unit. The "Brand Powerhouse Duo" narrative presents a complete, end-to-end solution for regional businesses, transforming a standard application into a compelling business case for contribution to Australia's economy.
             </p>
-            <div class="animate-pulse-slow">
-                <i class="fas fa-chevron-down text-white text-2xl"></i>
-            </div>
         </section>
 
-        <!-- Reports Section -->
-        <section id="reports" class="mb-16 animate-slide-up">
-            <div class="glass-morphism p-8 section-card">
-                <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                    <i class="fas fa-chart-line mr-3"></i>
-                    📄 Interactive Reports
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white/20 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-white mb-3">Email Reports</h3>
-                        <p class="text-white/80 mb-4">Concise versions optimized for email sharing</p>
-                        <ul id="email-reports-list" class="space-y-2">
-                            <li class="text-white/60"><em>No email reports found</em></li>
-                        </ul>
-                    </div>
-                    <div class="bg-white/20 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-white mb-3">Website Reports</h3>
-                        <p class="text-white/80 mb-4">Full interactive versions for web display</p>
-                        <ul id="website-reports-list" class="space-y-2">
-                            <li class="text-white/60"><em>No website reports found</em></li>
-                        </ul>
-                    </div>
-                </div>
+        <!-- Section 2: The Strategic Pivot -->
+        <section id="pivot" class="py-16 bg-white rounded-2xl shadow-lg p-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-[#2C3E50]">The State Nomination Gauntlet</h2>
+                <p class="text-gray-600 mt-2 max-w-3xl mx-auto">Securing a state nomination is the most critical hurdle. A data-driven analysis of state occupation lists and priorities reveals a clear, unavoidable strategic decision is required to mitigate risk and maximize the probability of success.</p>
             </div>
-        </section>
-
-        <!-- Documents Section -->
-        <section id="documents" class="mb-16 animate-slide-up">
-            <div class="glass-morphism p-8 section-card">
-                <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                    <i class="fas fa-file-alt mr-3"></i>
-                    📋 Documents & Research
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white/20 p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-3">📄 Documents</h3>
-                        <ul id="documents-list" class="space-y-2 text-sm">
-                            <li class="text-white/60"><em>No documents found</em></li>
-                        </ul>
-                    </div>
-                    <div class="bg-white/20 p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-3">🔬 Research Assets</h3>
-                        <ul id="research-list" class="space-y-2 text-sm">
-                            <li class="text-white/60"><em>No research files found</em></li>
-                        </ul>
-                    </div>
-                    <div class="bg-white/20 p-6 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-3">📊 Analytics</h3>
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-white" id="total-files">0</div>
-                            <div class="text-white/80 text-sm">Total Files</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="border-r-0 md:border-r-2 border-dashed pr-8">
+                    <h3 class="text-2xl font-semibold text-center mb-6 text-[#2C3E50]">Comparative Risk Analysis</h3>
+                    <div class="flex justify-around text-center p-4 rounded-lg">
+                        <div class="w-1/2">
+                            <p class="text-6xl font-extrabold text-red-500">High</p>
+                            <p class="font-bold text-gray-700 mt-2">New South Wales</p>
+                            <p class="text-sm text-gray-500">Occupations NOT on the official NSW Skills List, presenting a fundamental eligibility barrier.</p>
+                        </div>
+                        <div class="w-1/2">
+                            <p class="text-6xl font-extrabold text-green-600">Low</p>
+                            <p class="font-bold text-gray-700 mt-2">Victoria</p>
+                            <p class="text-sm text-gray-500">Open occupation list and explicit priority for 'Digital Economy' and 'Tourism' sectors.</p>
                         </div>
                     </div>
                 </div>
+                <div>
+                    <h3 class="text-2xl font-semibold text-center mb-6 text-[#2C3E50]">Points Optimisation: The 491 Advantage</h3>
+                    <p class="text-center text-gray-600 mb-4">The Victorian Skilled Work Regional (Subclass 491) visa is the mathematically optimal choice, offering 15 nomination points—a decisive competitive advantage.</p>
+                    <div class="chart-container">
+                        <canvas id="pointsChart"></canvas>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Audio Section -->
-        <section id="audio" class="mb-16 animate-slide-up">
-            <div class="glass-morphism p-8 section-card">
-                <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                    <i class="fas fa-music mr-3"></i>
-                    🎵 Audio Library
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white/20 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-white mb-4">Audio Files</h3>
-                        <ul id="audio-list" class="space-y-3">
-                            <li class="text-white/60"><em>No audio files found</em></li>
-                        </ul>
-                    </div>
-                    <div class="bg-white/20 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-white mb-4">Now Playing</h3>
-                        <div id="audio-player-container" class="hidden">
-                            <audio id="main-audio-player" controls class="w-full mb-4">
-                                Your browser does not support the audio element.
-                            </audio>
-                            <div class="audio-visualizer mb-4">
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
+        <!-- Section 3: The Four Layers of Value -->
+        <section id="layers" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-[#2C3E50]">The Four Layers of Strategic Advantage</h2>
+                <p class="text-gray-600 mt-2 max-w-3xl mx-auto">Beyond meeting basic criteria, the application is built on four pillars that demonstrate exceptional value and direct alignment with Victoria's economic and social priorities. Click each card to learn more.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Card 1: AI & Tech -->
+                <div class="perspective-1000">
+                    <div class="card-inner relative w-full h-64 cursor-pointer" onclick="this.classList.toggle('is-flipped')">
+                        <div class="card-face absolute w-full h-full rounded-lg shadow-xl bg-cover bg-center text-white" style="background-image: url('https://placehold.co/600x400/a9c1ff/FFFFFF?text=AI+%26+Tech&font=inter')">
+                            <div class="absolute inset-0 bg-black bg-opacity-40 rounded-lg"></div>
+                            <div class="relative flex flex-col justify-center items-center h-full p-6 text-center">
+                                <h3 class="text-2xl font-bold">AI & Tech Imperative</h3>
                             </div>
-                            <div id="current-track" class="text-white text-center">No track selected</div>
                         </div>
-                        <div id="audio-placeholder" class="text-center text-white/60">
-                            <i class="fas fa-headphones text-4xl mb-3"></i>
-                            <p>Add audio files to start playing</p>
+                        <div class="card-face card-back absolute w-full h-full rounded-lg shadow-xl bg-white p-6 text-sm">
+                            <h4 class="font-bold mb-2 text-[#3498DB]">The Pitch:</h4>
+                            <p>Positioning the duo as strategic implementers who can bridge Australia's AI adoption gap, helping regional SMEs leverage AI for productivity gains in marketing and design. This directly addresses Victoria's 'Digital Economy' priority.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2: First Nations -->
+                <div class="perspective-1000">
+                    <div class="card-inner relative w-full h-64 cursor-pointer" onclick="this.classList.toggle('is-flipped')">
+                        <div class="card-face absolute w-full h-full rounded-lg shadow-xl bg-cover bg-center text-white" style="background-image: url('https://placehold.co/600x400/a1eec4/FFFFFF?text=First+Nations&font=inter')">
+                            <div class="absolute inset-0 bg-black bg-opacity-40 rounded-lg"></div>
+                            <div class="relative flex flex-col justify-center items-center h-full p-6 text-center">
+                                <h3 class="text-2xl font-bold">First Nations Partnership</h3>
+                            </div>
+                        </div>
+                        <div class="card-face card-back absolute w-full h-full rounded-lg shadow-xl bg-white p-6 text-sm">
+                            <h4 class="font-bold mb-2 text-[#3498DB]">The Pitch:</h4>
+                            <p>Applying their skills to support funded state priorities like the 'First Peoples Tourism Growth Program'. This demonstrates a deep, researched commitment to contributing to authentic storytelling and economic self-determination.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3: Regional -->
+                <div class="perspective-1000">
+                    <div class="card-inner relative w-full h-64 cursor-pointer" onclick="this.classList.toggle('is-flipped')">
+                        <div class="card-face absolute w-full h-full rounded-lg shadow-xl bg-cover bg-center text-white" style="background-image: url('https://placehold.co/600x400/fce69f/FFFFFF?text=Regional&font=inter')">
+                            <div class="absolute inset-0 bg-black bg-opacity-40 rounded-lg"></div>
+                            <div class="relative flex flex-col justify-center items-center h-full p-6 text-center">
+                                <h3 class="text-2xl font-bold">Regional Renaissance</h3>
+                            </div>
+                        </div>
+                        <div class="card-face card-back absolute w-full h-full rounded-lg shadow-xl bg-white p-6 text-sm">
+                            <h4 class="font-bold mb-2 text-[#3498DB]">The Pitch:</h4>
+                            <p>Making a deliberate, strategic choice to relocate to a city like Geelong, aligning with its 'Clever and Creative' vision. They become the "missing piece" to help local businesses achieve government-endorsed economic goals.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4: Asia-Pacific -->
+                <div class="perspective-1000">
+                    <div class="card-inner relative w-full h-64 cursor-pointer" onclick="this.classList.toggle('is-flipped')">
+                        <div class="card-face absolute w-full h-full rounded-lg shadow-xl bg-cover bg-center text-white" style="background-image: url('https://placehold.co/600x400/fecaca/FFFFFF?text=Asia-Pacific&font=inter')">
+                            <div class="absolute inset-0 bg-black bg-opacity-40 rounded-lg"></div>
+                            <div class="relative flex flex-col justify-center items-center h-full p-6 text-center">
+                                <h3 class="text-2xl font-bold">Asia-Pacific Gateway</h3>
+                            </div>
+                        </div>
+                        <div class="card-face card-back absolute w-full h-full rounded-lg shadow-xl bg-white p-6 text-sm">
+                            <h4 class="font-bold mb-2 text-[#3498DB]">The Pitch:</h4>
+                            <p>Acting as the bridge between high-level government tourism strategies and the on-the-ground needs of regional SMEs, helping them access and profit from high-value inbound Asian tourist markets.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Quick Actions -->
-        <section class="mb-16 animate-slide-up">
-            <div class="glass-morphism p-8 section-card">
-                <h2 class="text-3xl font-bold text-white mb-6 text-center">
-                    <i class="fas fa-bolt mr-3"></i>
-                    Quick Actions
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <button onclick="runOrganizeScript()" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg transition-colors">
-                        <i class="fas fa-cogs text-2xl mb-2"></i>
-                        <div class="font-semibold">Organize Files</div>
-                        <div class="text-sm opacity-80">Run organization script</div>
-                    </button>
-                    <button onclick="openChatbot()" class="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg transition-colors">
-                        <i class="fas fa-robot text-2xl mb-2"></i>
-                        <div class="font-semibold">Ask AI</div>
-                        <div class="text-sm opacity-80">Chat about documents</div>
-                    </button>
-                    <button onclick="refreshFileList()" class="bg-purple-500 hover:bg-purple-600 text-white p-4 rounded-lg transition-colors">
-                        <i class="fas fa-sync text-2xl mb-2"></i>
-                        <div class="font-semibold">Refresh</div>
-                        <div class="text-sm opacity-80">Update file listings</div>
-                    </button>
+        <!-- Section 4: The Roadmap -->
+        <section id="roadmap" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-[#2C3E50]">An Actionable Roadmap to Nomination</h2>
+                <p class="text-gray-600 mt-2 max-w-3xl mx-auto">A structured, project-managed approach ensures all components of this complex strategy are completed efficiently and to a high standard, culminating in a superior application for Victorian state nomination.</p>
+            </div>
+            <div class="relative max-w-4xl mx-auto">
+                <!-- Timeline Line -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-[#BDC3C7]"></div>
+                
+                <!-- Timeline Items -->
+                <div class="space-y-12">
+                    <div class="relative">
+                        <div class="md:flex items-center md:justify-end">
+                            <div class="md:w-1/2 md:pr-8">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="text-lg font-bold text-[#3498DB]">Phase 1: Portfolio Development</h3>
+                                    <p class="text-sm text-gray-600 mt-2">Months 1-3: Sit for English tests, collate documents, and build the 'Strategic Evidence Portfolio' including case studies and concept proposals to substantiate claims.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-[#3498DB] border-4 border-white"></div>
+                    </div>
+                    <div class="relative">
+                        <div class="md:flex items-center">
+                            <div class="md:w-1/2 md:pl-8 md:text-left text-right">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="text-lg font-bold text-[#3498DB]">Phase 2: Skills Assessment</h3>
+                                    <p class="text-sm text-gray-600 mt-2">Months 4-7: Lodge completed skills assessment applications with VETASSESS for both partners, ensuring perfect alignment with ANZSCO requirements.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-[#3498DB] border-4 border-white"></div>
+                    </div>
+                    <div class="relative">
+                        <div class="md:flex items-center md:justify-end">
+                            <div class="md:w-1/2 md:pr-8">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="text-lg font-bold text-[#3498DB]">Phase 3: EOI & ROI Submission</h3>
+                                    <p class="text-sm text-gray-600 mt-2">Month 8: Upon receiving positive assessments, submit a unified Expression of Interest (EOI) and a high-quality Registration of Interest (ROI) to Victoria.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-[#3498DB] border-4 border-white"></div>
+                    </div>
+                    <div class="relative">
+                        <div class="md:flex items-center">
+                            <div class="md:w-1/2 md:pl-8 md:text-left text-right">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="text-lg font-bold text-[#3498DB]">Phase 4: Invitation & Lodgement</h3>
+                                    <p class="text-sm text-gray-600 mt-2">Month 9+: Await invitation from the Victorian Government and lodge the formal Subclass 491 visa application within the 60-day timeframe.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-[#3498DB] border-4 border-white"></div>
+                    </div>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- Chatbot -->
-    <button class="chatbot-toggle" onclick="toggleChatbot()">
-        <i class="fas fa-comments"></i>
-    </button>
-
-    <div id="chatbot" class="chatbot-container glass-morphism">
-        <div class="h-full flex flex-col">
-            <div class="p-4 border-b border-white/20">
-                <h3 class="text-white font-semibold flex items-center">
-                    <i class="fas fa-robot mr-2"></i>
-                    Document Assistant
-                </h3>
-                <button onclick="toggleChatbot()" class="absolute top-4 right-4 text-white/60 hover:text-white">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3">
-                <div class="bg-white/20 p-3 rounded-lg">
-                    <div class="text-white/80 text-sm">AI Assistant</div>
-                    <div class="text-white">Hello! I can help you analyze documents, answer questions about your research, and provide insights. What would you like to know?</div>
-                </div>
-            </div>
-            <div class="p-4 border-t border-white/20">
-                <div class="flex gap-2">
-                    <input type="text" id="chat-input" placeholder="Ask about your documents..." 
-                           class="flex-1 p-2 rounded bg-white/20 text-white placeholder-white/60 border border-white/30">
-                    <button onclick="sendMessage()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <footer class="text-center py-8 border-t border-gray-200">
+        <p class="text-gray-500">This interactive application visualizes the 'Max-Optimal' strategy, presenting a proactive, contribution-focused business case for skilled migration.</p>
+    </footer>
 
     <script>
-        let chatbotOpen = false;
-        let audioFiles = [];
-        let currentAudioIndex = -1;
-
-        // Animation observer
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-slide-up');
+        document.addEventListener('DOMContentLoaded', function () {
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
                 }
-            });
-        }, observerOptions);
+                return label;
+            };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Observe sections for animation
-            document.querySelectorAll('section').forEach(section => {
-                observer.observe(section);
-            });
-
-            // Load initial file listings
-            refreshFileList();
-
-            // Setup audio player events
-            const audioPlayer = document.getElementById('main-audio-player');
-            audioPlayer.addEventListener('ended', () => {
-                playNextTrack();
-            });
-
-            // Chat input enter key
-            document.getElementById('chat-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    sendMessage();
+            const pointsCtx = document.getElementById('pointsChart').getContext('2d');
+            new Chart(pointsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Base Points (Est.)', 'Partner Skills', 'VIC 491 Nomination'],
+                    datasets: [{
+                        data: [70, 10, 15],
+                        backgroundColor: ['#A9CCE3', '#AED6F1', '#3498DB'],
+                        borderColor: '#F8F7F4',
+                        borderWidth: 4,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#4A4A4A',
+                                font: {
+                                    family: "'Inter', sans-serif"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: tooltipTitleCallback
+                            }
+                        }
+                    }
                 }
             });
         });
-
-        function toggleChatbot() {
-            const chatbot = document.getElementById('chatbot');
-            chatbotOpen = !chatbotOpen;
-            
-            if (chatbotOpen) {
-                chatbot.classList.add('open');
-            } else {
-                chatbot.classList.remove('open');
-            }
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            
-            if (!message) return;
-
-            // Add user message
-            addChatMessage('You', message, 'user');
-            input.value = '';
-
-            // Simulate AI response (replace with actual AI integration)
-            setTimeout(() => {
-                const responses = [
-                    "I can help analyze your documents. Could you specify which document you'd like me to review?",
-                    "Based on your file structure, I notice you have research materials. Would you like me to summarize them?",
-                    "I can extract key insights from your documents. Which topic are you most interested in?",
-                    "Let me search through your documents for relevant information...",
-                    "I found several relevant files. Would you like me to create a summary report?"
-                ];
-                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                addChatMessage('AI Assistant', randomResponse, 'ai');
-            }, 1000);
-        }
-
-        function addChatMessage(sender, message, type) {
-            const chatMessages = document.getElementById('chat-messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = type === 'user' ? 'bg-blue-500/30 p-3 rounded-lg ml-8' : 'bg-white/20 p-3 rounded-lg mr-8';
-            
-            messageDiv.innerHTML = `
-                <div class="text-white/80 text-sm">${sender}</div>
-                <div class="text-white">${message}</div>
-            `;
-            
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function runOrganizeScript() {
-            // This would typically call the organize-files.sh script
-            alert('Organization script would run here. In a real implementation, this would execute the file organization script.');
-            setTimeout(refreshFileList, 1000);
-        }
-
-        function refreshFileList() {
-            // Simulate file discovery (replace with actual file system integration)
-            const sampleFiles = {
-                emailReports: ['email_report1.html', 'email_summary.html'],
-                websiteReports: ['website_analysis.html', 'website_dashboard.html'],
-                documents: ['research_paper.pdf', 'analysis.docx', 'notes.txt'],
-                research: ['data.csv', 'chart.png', 'results.json'],
-                audio: ['audio_interview.mp3', 'audio_presentation.wav']
-            };
-
-            updateFileList('email-reports-list', sampleFiles.emailReports);
-            updateFileList('website-reports-list', sampleFiles.websiteReports);
-            updateFileList('documents-list', sampleFiles.documents);
-            updateFileList('research-list', sampleFiles.research);
-            updateAudioList(sampleFiles.audio);
-
-            const totalFiles = Object.values(sampleFiles).flat().length;
-            document.getElementById('total-files').textContent = totalFiles;
-        }
-
-        function updateFileList(listId, files) {
-            const list = document.getElementById(listId);
-            if (files.length === 0) {
-                list.innerHTML = '<li class="text-white/60"><em>No files found</em></li>';
-                return;
-            }
-
-            list.innerHTML = files.map(file => `
-                <li class="text-white hover:text-blue-300 cursor-pointer transition-colors">
-                    <i class="fas fa-file mr-2"></i>${file}
-                </li>
-            `).join('');
-        }
-
-        function updateAudioList(files) {
-            const list = document.getElementById('audio-list');
-            audioFiles = files;
-
-            if (files.length === 0) {
-                list.innerHTML = '<li class="text-white/60"><em>No audio files found</em></li>';
-                document.getElementById('audio-player-container').classList.add('hidden');
-                document.getElementById('audio-placeholder').classList.remove('hidden');
-                return;
-            }
-
-            document.getElementById('audio-player-container').classList.remove('hidden');
-            document.getElementById('audio-placeholder').classList.add('hidden');
-
-            list.innerHTML = files.map((file, index) => `
-                <li class="bg-white/10 p-3 rounded cursor-pointer hover:bg-white/20 transition-colors" 
-                    onclick="playAudio(${index})">
-                    <div class="flex items-center justify-between">
-                        <div class="text-white">
-                            <i class="fas fa-music mr-2"></i>${file}
-                        </div>
-                        <button class="text-blue-300 hover:text-blue-200">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-                </li>
-            `).join('');
-        }
-
-        function playAudio(index) {
-            if (index < 0 || index >= audioFiles.length) return;
-            
-            currentAudioIndex = index;
-            const audioPlayer = document.getElementById('main-audio-player');
-            const fileName = audioFiles[index];
-            
-            // In a real implementation, this would be the actual file path
-            audioPlayer.src = `audio/${fileName}`;
-            audioPlayer.load();
-            audioPlayer.play();
-            
-            document.getElementById('current-track').textContent = fileName;
-        }
-
-        function playNextTrack() {
-            if (audioFiles.length === 0) return;
-            currentAudioIndex = (currentAudioIndex + 1) % audioFiles.length;
-            playAudio(currentAudioIndex);
-        }
-
-        function openChatbot() {
-            if (!chatbotOpen) {
-                toggleChatbot();
-            }
-        }
     </script>
 </body>
 </html>
